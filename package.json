@@ -1,0 +1,15 @@
+{
+  "name": "test_relationship01",
+  "version": "0.0.0",
+  "description": "",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.4.3",
+    "morgan": "^1.1.1",
+    "body-parser": "^1.3.1",
+    "method-override": "^2.0.2",
+    "mongoose": "^3.8.12",
+    "mongo-relation": "^0.5.4",
+    "mongoose-relationship": "0.0.6"
+  }
+}

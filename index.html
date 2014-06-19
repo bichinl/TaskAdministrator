@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Bootstrap 101 Template</title>
+		<!-- Bootstrap -->
+		<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		<script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		<script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+		<![endif]-->
+	</head>
+	<body ng-app="myApp" ng-controller="MainCtrl">
+		<div class="container">
+			<div class="jumbotron">
+				<h1>{{ message }}</h1>
+			</div>
+			<nav class="navbar navbar-inverse" role="navigation">
+				<div class="container-fluid">
+					<!-- Brand and toggle get grouped for better mobile display -->
+					<div class="navbar-header">
+						<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						</button>
+						<a class="navbar-brand" href="#">Brand</a>
+					</div>
+					<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+						<ul class="nav navbar-nav">
+							<li class="active"><a href="#">Tasks</a></li>
+							<li><a href="" ng-click="newUser()">New user</a></li>
+							<li><a href="" ng-click="newTask()">New task</a></li>
+						</ul>			
+					</div><!-- /.navbar-collapse -->
+				</div><!-- /.container-fluid -->
+			</nav>
+			
+			<div ng-if="goNewTask == true && goNewUser == false">
+				<form role="form">
+					<div class="form-group">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" id="nombre" placeholder="Nombre" name="nombre" ng-model="formTask.nombre">
+					</div>
+					<div class="form-group">
+						<label for="direccion">Direccion</label>
+						<input type="text" class="form-control" id="direccion" placeholder="direccion" name="direccion" ng-model="formTask.direccion">
+					</div>
+					<div class="form-group">
+						<label for="telefono">Telefono</label>
+						<input type="text" class="form-control" id="telefono" placeholder="telefono" name="telefono" ng-model="formTask.telefono">
+					</div>
+					<div class="form-group">
+						<label for="cantidad">email</label>
+						<input type="text" class="form-control" id="email" placeholder="email" name="email" ng-model="formTask.email">
+					</div>
+					<div class="form-group">
+						<label for="cantidad">Cantidad</label>
+						<input type="number" class="form-control" id="cantidad" placeholder="Escriba solo numeros o esta mierda truena" name="cantidad" ng-model="formTask.cantidad">
+					</div>
+					<button class="btn btn-primary" ng-click="guardarNewTask()">Guardar</button>
+					<button class="btn btn-default" ng-click="cancelarNewTask()">Cancelar</button>
+				</form>
+			</div>
+
+			<div ng-if="goNewUser == true && goNewTask == false">
+				<form role="form">
+					<div class="form-group">
+						<label for="nombre">Nombre</label>
+						<input type="text" class="form-control" id="nombre" placeholder="Nombre" name="nombre" ng-model="formUser.nombre">
+					</div>
+					<div class="form-group">
+						<label for="username">Username</label>
+						<input type="text" class="form-control" id="username" placeholder="username" name="username" ng-model="formUser.username">
+					</div>
+					<button class="btn btn-primary" ng-click="guardarNewUser()">Guardar</button>
+					<button class="btn btn-default" ng-click="cancelarNewUser()">Cancelar</button>
+				</form>
+			</div>
+
+			<div ng-if="goNewUser == false && goNewTask == false">
+				<table class="table table-stripe">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Domicilio</th>
+							<th>Telefono</th>
+							<th>Cantidad</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="task in tasks">
+							<td>
+								<input type="checkbox" ng-model="isChecked" ng-change="marcarTask(task._id, isChecked)">
+							</td>
+							<td>{{task.nombre}}</td>
+							<td>{{task.direccion}}</td>
+							<td>{{task.telefono}}</td>
+							<td>{{task.cantidad}}</td>
+							<td>
+								<button class="btn btn-primary">Editar</button>
+								<button class="btn btn-default" ng-click="borrarTask(task._id)">Borrar</button>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<hr>
+				<!-- <select class="form-control" name="sel_usuario" ng-model="sel_usuario">
+					<option value="">-- Seleccione usuario --</option>
+					<option ng-repeat="user in users" value="{{user._id}}">{{user.nombre}}</option>
+				</select>
+				<br> -->
+				<form name="formSelUser">
+					<select class="form-control" nombre="selectUser" ng-model="selectUser.user" ng-options="user.nombre for user in users track by user._id" required>
+						<option value="">-- Select an option--</option>
+					</select>
+					<br>
+					<button ng-disabled="formSelUser.$invalid" class="btn btn-primary" ng-click="asignarTarea()">Asignar tarea a usuario</button>
+				</form>
+
+				<hr>
+				<h1>Asignadas</h1>
+				<table class="table table-stripe">
+					<thead>
+						<tr>
+							<th>#</th>
+							<th>Nombre</th>
+							<th>Domicilio</th>
+							<th>Telefono</th>
+							<th>Cantidad</th>
+							<th>COBRADOR</th>
+							<th>Acciones</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-repeat="task in tasksassigned">
+							<td>
+								
+							</td>
+							<td>{{task.nombre}}</td>
+							<td>{{task.direccion}}</td>
+							<td>{{task.telefono}}</td>
+							<td>{{task.cantidad}}</td>
+							<td>{{task.user.nombre}}</td>
+							<td>
+								<p>- - -</p>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+
+				<!-- <select class="form-control" name="sel_usuarios" ng-model="sel_usuarios" ng-options="dep.nombre for dep in dependencias track by dep.id" required>
+				<option value="">-- Seleccione usuario --</option>
+				</select> -->
+
+			</div>
+
+		</div>
+
+		<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+		<!-- Include all compiled plugins (below), or include individual files as needed -->
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+		<!-- ANGULAR -->
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.12/angular.min.js"></script>
+		<script src="ang.js"></script>
+	</body>
+</html>
